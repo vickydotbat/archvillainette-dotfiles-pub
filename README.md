@@ -15,6 +15,7 @@
  * bspwm
  * sxhkd
  * picom
+ * polybar
  * pywal (16 colors fork is HIGHLY recommended, things may break otherwise)
  * imagemagick (needed for generating some components of the theme)
  * feh (does the actual wallpaper work for the pywal scripts to allow theming and wallpaper configuration to be seperate)
