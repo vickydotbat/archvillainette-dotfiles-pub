@@ -43,3 +43,33 @@
 4. There is no support for QT in these dotfiles. I don't use QT at all or very little, so if you want pywal to work with QT, it will have to be set up.
 5. Your window rules are in the bspwm/config folder, if you want to change how different windows behave.
 6. First time launch of BSPWM may have some issues if it can't configure a theme by default. If it doesn't work correctly, make sure you've got a wallpaper in ~/.wallpapers so that it can generate the theme, and you may have to use walmaker to generate one. "walmaker -r -t" in your terminal should work fine. Once Pywal knows what theme its using, it should be consistently reapplied on reboots.
+
+# Credits
+
+rxyhn
+   BrightnessCTL script came from here. Also, check out their stuff. Makes you want to use AwesomeWM, doesn't it?
+https://github.com/rxyhn
+
+gh0stzk
+   gh0stzk's dotfiles have always been an excellent reference for new bspwm users. While I have also made many of my own adaptations for my own usecase, I didn't see any reason to reinvent the wheel, so some of his work has been integrated in part here.
+https://github.com/gh0stzk/dotfiles
+
+donovanglover
+   It took me some time to figure out how to apply pywal themes to dunst. Donovan Glover made it look easy.
+https://github.com/donovanglover/nix-config
+
+ZephyrCodesStuff
+   ZephyrCodesStuff built the Vencord css template for use with pywal.
+https://github.com/ZephyrCodesStuff/pywal-vencord
+
+yarmo.eu
+   The playerctl module shown on this website helped me understand more about how playerctl interacts with polybar.
+https://yarmo.eu/blog/playerctl-polybar/
+
+runningnak3d
+   Out of all the cava modules for polybar, this one worked the best for my usecase. It will disappear when no audio is playing, which was my biggest priority.
+https://gist.github.com/runningnak3d/1b9e2df0239f7326965d918829828bd1
+
+Other pieces of the puzzle:
+https://gitlab.com/es20490446e/colors
+https://gist.github.com/wimstefan/64e17d257d07b666079628a7e1859823
