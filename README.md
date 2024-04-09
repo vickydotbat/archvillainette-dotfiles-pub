@@ -45,30 +45,18 @@
 6. First time launch of BSPWM may have some issues if it can't configure a theme by default. If it doesn't work correctly, make sure you've got a wallpaper in ~/.wallpapers so that it can generate the theme, and you may have to use walmaker to generate one. "walmaker -r -t" in your terminal should work fine. Once Pywal knows what theme its using, it should be consistently reapplied on reboots.
 
 # Credits
+   
+https://github.com/gh0stzk/dotfiles - gh0stzk's dotfiles have always been an excellent reference for new bspwm users. While I have also made many of my own adaptations for my own usecase, I didn't see any reason to reinvent the wheel, so some of his work has been integrated in part here.
 
-rxyhn
-   BrightnessCTL script came from here. Also, check out their stuff. Makes you want to use AwesomeWM, doesn't it?
-https://github.com/rxyhn
+https://github.com/rxyhn - BrightnessCTL script came from here. Also, check out their stuff. Makes you want to use AwesomeWM, doesn't it?
 
-gh0stzk
-   gh0stzk's dotfiles have always been an excellent reference for new bspwm users. While I have also made many of my own adaptations for my own usecase, I didn't see any reason to reinvent the wheel, so some of his work has been integrated in part here.
-https://github.com/gh0stzk/dotfiles
+https://github.com/donovanglover/nix-config - It took me some time to figure out how to apply pywal themes to dunst. Donovan Glover made it look easy.
 
-donovanglover
-   It took me some time to figure out how to apply pywal themes to dunst. Donovan Glover made it look easy.
-https://github.com/donovanglover/nix-config
+https://github.com/ZephyrCodesStuff/pywal-vencord - ZephyrCodesStuff built the Vencord css template for use with pywal.
 
-ZephyrCodesStuff
-   ZephyrCodesStuff built the Vencord css template for use with pywal.
-https://github.com/ZephyrCodesStuff/pywal-vencord
+https://yarmo.eu/blog/playerctl-polybar/ - The playerctl module shown on this website helped me understand more about how playerctl interacts with polybar.
 
-yarmo.eu
-   The playerctl module shown on this website helped me understand more about how playerctl interacts with polybar.
-https://yarmo.eu/blog/playerctl-polybar/
-
-runningnak3d
-   Out of all the cava modules for polybar, this one worked the best for my usecase. It will disappear when no audio is playing, which was my biggest priority.
-https://gist.github.com/runningnak3d/1b9e2df0239f7326965d918829828bd1
+https://gist.github.com/runningnak3d/1b9e2df0239f7326965d918829828bd1 - Out of all the cava modules for polybar, this one worked the best for my usecase. It will disappear when no audio is playing, which was my biggest priority.
 
 Other pieces of the puzzle:
 https://gitlab.com/es20490446e/colors
