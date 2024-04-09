@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if xinput list-props "$TOUCHPAD_DEVICE" | grep "Device Enabled ([[:digit:]]\+):\s*1" >/dev/null; then 
+    xinput disable "$TOUCHPAD_DEVICE"
+    notify-send -u low -i input-mouse "Trackpad" "Trackpad disabled."
+else 
+    xinput enable "$TOUCHPAD_DEVICE"
+    notify-send -u low -i input-mouse "Trackpad" "Trackpad enabled."
+fi

@@ -1,0 +1,244 @@
+#!/usr/bin/env bash
+#
+#   archvillainette 2024
+#                                      ..                                       ..                              
+#   x=~                          x .d88"                                  < .z@8"`                              
+#  88x.   .e.   .e.               5888R      ..    .     :                 !@88E                      .u    .   
+# '8888X.x888:.x888        u      '888R    .888: x888  x888.        u      '888E   u         .u     .d88B :@8c  
+#  `8888  888X '888k    us888u.    888R   ~`8888~'888X`?888f`    us888u.    888E u@8NL    ud8888.  ="8888f8888r 
+#   X888  888X  888X .@88 "8888"   888R     X888  888X '888>  .@88 "8888"   888E`"88*"  :888'8888.   4888>'88"  
+#   X888  888X  888X 9888  9888    888R     X888  888X '888>  9888  9888    888E .dN.   d888 '88%"   4888> '    
+#   X888  888X  888X 9888  9888    888R     X888  888X '888>  9888  9888    888E~8888   8888.+"      4888>      
+#  .X888  888X. 888~ 9888  9888    888R     X888  888X '888>  9888  9888    888E '888&  8888L       .d888L .+   
+#  `%88%``"*888Y"    9888  9888   .888B .  "*88%""*88" '888!` 9888  9888    888E  9888. '8888c. .+  ^"8888*"    
+#    `~     `"       "888*""888"  ^*888%     `~    "    `"`   "888*""888" '"888*" 4888"  "88888%       "Y"      
+#                     ^Y"   ^Y'     "%                         ^Y"   ^Y'     ""    ""      "YP'                 
+#
+#   Colorscheme and wallpaper changer.
+#   This uses pywal to fully update all colorschemes for active programs.
+#   In order for it to work properly, you need the following:
+#     - pywal (16 colors fork)
+#     - pywalfox (if you use Firefox)
+#     - vscode pywal theme (If you use vscode. If you want to set it for vim or something that's up to you)
+#     - themix-full (For gtk and spotify color theme)     
+#       >> Note: If your oomox/themix is not installed in /opt, you will need to change one of the functions below.
+#     - Rofi (for banner updates)
+#     - xorg-xrdb (for merging Xresources database colors)
+#     - At least one image in "~/.wallpapers", as this is where wallpapers will be pulled from. You can change the folder below.
+#
+#   To run:
+#     Make sure the script is executable, and then run "wallpaper -h" in your console.
+#     This will print the help text and get you started.
+#     Happy theming!
+#   
+#   Credits:
+#     Color printer script: https://gitlab.com/es20490446e/colors
+#     Pywal vencord template: https://github.com/ZephyrCodesStuff/pywal-vencord
+#
+
+if [ "$WALLPAPERS" == "" ]; then
+  WALLPAPERS="~/.wallpapers"
+fi
+
+printColor () {
+	local color="${1}"
+
+	printf "\033[1;4%sm     " "${color}"
+	printf "\033[0m    "
+	printf "\033[1;3%smSampleText  " "${color}"
+	printf "\033[0;3%smSampleText  " "${color}"
+	printf "\033[0m\n"
+}
+
+printColors () {
+	local color
+	# 0 black
+	# 1 red
+	# 2 green
+	# 3 yellow
+	# 4 blue
+	# 5 magenta / orange
+	# 6 cyan / purple
+	# 7 white
+	
+	for color in 0 7; do
+		printColor "${color}"
+	done
+	echo
+	
+	for color in 4 5 6; do
+		printColor "${color}"
+	done
+	echo
+	
+	for color in 2 3 1; do
+		printColor "${color}"
+	done
+	echo
+}
+
+updateRofiWalls() {
+  rofiCache="${HOME}/.cache/rofi/"
+  if [ ! -d "${rofiCache}" ] ; then
+    mkdir -p "${rofiCache}"
+  fi
+  echo "Updating Rofi banner..."
+  convert -strip "$1" -gravity center -scale 35% "${rofiCache}/banner.jpg"
+  echo "Rofi banner updated in ${rofiCache}."
+}
+
+generateGTKThemes() {
+  echo "Generating GTK Oomox themes..."
+  /opt/oomox/plugins/theme_oomox/change_color.sh /opt/oomox/scripted_colors/xresources/xresources-reverse
+  echo "GTK themes generated."
+  echo "Generating Papirus icon set..."
+  /opt/oomox/plugins/icons_papirus/change_color.sh /opt/oomox/scripted_colors/xresources/xresources-reverse
+  echo "Papirus icon set generated."
+  echo "Generating Spotify theme..."
+  /opt/oomox/plugins/oomoxify/oomoxify.sh /opt/oomox/scripted_colors/xresources/xresources-reverse
+  echo "Spotify theme generated."
+}
+
+generateDiscordTheme() {
+  echo "Generating Discord theme..."
+  cp "$WALCACHE/colors-discord.css" "$DISCORDTHEMES/pywal.css"
+  echo "Discord theme generated in $DISCORDTHEMES."
+}
+
+mergeXrdbColors() {
+  echo "Merging XRDB colors..."
+  xrdb -merge "$WALCACHE/colors.Xresources"
+  echo "XRDB colors merged from $WALCACHE."
+}
+
+pywalChangeTheme() {
+  echo "Generating pywal theme using $1..."
+  wal -q -i $1 -e
+  sleep 0.25
+  mergeXrdbColors
+  generateDiscordTheme
+  updateRofiWalls $1
+  generateGTKThemes
+  pywalfox update
+  echo "Pywal theme successfully updated."
+  printColors
+  echo "Reloading BSPWM."
+  bspc wm -r
+}
+
+printHelp() {
+   echo
+   echo "█░█░█ ▄▀█ █░░ █▀▄▀█ ▄▀█ █▄▀ █▀▀ █▀█"
+   echo "▀▄▀▄▀ █▀█ █▄▄ █░▀░█ █▀█ █░█ ██▄ █▀▄"
+   echo
+   echo " --- SUMMARY ---"
+   echo
+   echo "\"Walmaker\" will use Pywal and/or Feh to set a theme and wallpaper all at once."
+   echo "By default, your wallpaper folder is located in \"~/.wallpapers\"."
+   echo "If you're missing this folder or want to use a different one, be sure to configure"
+   echo "it in your environment variables or at the top of the walmaker script."
+   echo
+   echo "Walmaker Script:"
+   echo "     $(eval which walmaker)"
+   echo
+   echo "Current \$WALLPAPERS folder location:"
+   echo "     ${WALLPAPERS}"
+   echo
+   echo " --- HOW TO USE ---"
+   echo
+   echo "Syntax: wallpaper [-h|help] [-t|theme] [-l|list] [-c|colors] <\"-r|random\" or \"wallpaper search term\">"
+   echo "options:"
+   echo "     h     Print this message again."
+   echo "     t     Generate pywal theme for your wallpaper."
+   echo "     l     List your wallpaper library selections."
+   echo "     c     Print your current color scheme."
+   echo "     r     Choose a random theme. If a wallpaper is specified, it is prioritized."
+   echo
+   echo " --- SEARCH TERMS ---"
+   echo
+   echo "When using the walmaker command, a search term is usually sufficient."
+   echo "For example, if you have a wallpaper named 50401-CuteAnimeGirl-asdfaf.jpg"
+   echo "you can just type 'cuteanimegirl' (it's not case sensitive) for your search term."
+   echo "For most users, however, 'cuteanimegirl' is likely not specific enough,"
+   echo "so try to name your files in a useful way."
+   echo
+   echo "Note: Walmaker will also search recursively, in case you want to keep your wallpapers"
+   echo "in different subdirectories."
+   echo
+   echo " --- SETTING THEMES ---"
+   echo
+   echo "By default, walmaker will not set a theme. You need to specify the \"-t\" option in"
+   echo "order to trigger pywal's color generation. This is useful in case you just want to"
+   echo "change the wallpaper, which is what the script assumes you want to do."
+   echo
+   echo "If you're feeling lucky, you can specify \"-r\" instead of a search term and it will"
+   echo "select a random theme for you. Useful if you're just trying to change things up."
+}
+
+for i in "$@"; do
+  case $i in
+    -h|-help|--help|--h)
+      printHelp
+      exit
+      ;;
+    -l|-list|--list|--l)
+      listWallpapers=$(eval find $WALLPAPERS/*)
+      echo "All wallpapers are listed below."
+      echo
+      echo "$listWallpapers"
+      exit
+      ;;
+    -c|-colors|--colors|--c)
+      printColors
+      exit
+      ;;
+    -t|-theme|--theme|--t)
+      WILL_DO_THEME=true
+      shift
+      ;;
+    -r|-random|--random|--r)
+      WILL_DO_RANDOM=true
+      shift
+      ;;
+    -*|--*|\?)
+      echo "Unknown option: $i"
+      exit
+      ;;
+    *)
+      selection=$i
+      ;;
+  esac
+done
+
+if [ "$selection" != "" ]; then
+    newWallpaper=$(eval find $WALLPAPERS -iname "$selection*")
+elif [ "$WILL_DO_RANDOM" = true ]; then
+    newWallpaper=$(eval find $WALLPAPERS/* | shuf -n 1)
+else
+    echo "walmaker: missing operand"
+    exit 1
+fi
+
+if [ ! -f "$newWallpaper" ]; then
+    echo "Unable to locate file: \"$selection\"."
+    dunstify -i error "Theme" "Unable to locate file: \"$selection\"."
+    exit 1
+fi
+
+fileName=$(basename $newWallpaper)
+
+if [ "$WILL_DO_THEME" = true ]; then
+    pywalChangeTheme $newWallpaper
+
+    sleep 4.0
+
+    echo "Now using: \"$fileName\"."
+    dunstify -I $newWallpaper "Theme" "Now using: \"$fileName\"."
+else
+    echo $newWallpaper > $WALCACHE/wal
+    feh --bg-scale "$(< $walCache/wal)"
+    updateRofiWalls $newWallpaper
+
+    echo "Now using: \"$fileName\"."
+    dunstify -I $newWallpaper "Wallpaper" "Now using: \"$fileName\"."
+fi

@@ -1,0 +1,26 @@
+@import "~/.config/rofi/config"
+
+inputbar {
+    background-image:            url("~/.cache/rofi/banner.jpg", width);
+    padding:                     100px 150px;
+}
+
+textbox-prompt-colon {
+    font:                        "Iosevka Nerd Font Bold 9";
+    str:                         "";
+    padding:                     12px 19px 0 15px;
+    background-color:            @background;
+    text-color:                  inherit;
+}
+
+entry {
+    background-color:            @background;
+    text-color:                  @foreground;
+    placeholder:                 "Search...";
+}
+
+listview {
+    columns:                     3;
+    lines:						 5;
+    dynamic:                     true;
+}

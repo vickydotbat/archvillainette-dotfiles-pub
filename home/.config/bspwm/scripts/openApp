@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+#   Application opener for use with sxhkd.
+#   Original Author: z0mbi3
+#   url:    https://github.com/gh0stzk
+#   Modified for personal use by archvillainette. Change your preferred apps as you like.
+#
+#   Some explanations of what this contains:
+#       rofi calc: A calculator menu built into rofi.
+#           needs install: "rofi-calc" package to function.
+#       archwiki: an offline Arch Wiki search utility.
+#           needs install: "archwiki-offline" and "arch-wiki-docs" packages to function.
+#
+
+case "$1" in
+    --menu)
+        rofi -show drun -theme "$ROFI_CONFIG/launcher.rasi"
+        ;;
+    --calc)
+        rofi -show calc -modi calc -no-show-match -no-sort -theme "$ROFI_CONFIG/calc.rasi"
+        ;;
+    --archwiki)
+        archwiki-offline -m "rofi -dmenu -i -theme $ROFI_CONFIG/archmenu.rasi"
+        ;;
+    --terminal)
+        kitty
+       	;;
+    --floatingterminal)
+        kitty --class kitty_FLOATING
+        ;;
+    --filemanager)
+        thunar
+        ;;
+    --browser)
+       	firefox
+        ;;
+    --editor)
+        code-oss
+        ;;
+    --soundcontrol)
+        pavucontrol
+        ;;
+    --networkmanager)
+        nm-connection-editor
+        ;;
+    *)
+        echo "Invalid option specified."
+        ;;
+esac

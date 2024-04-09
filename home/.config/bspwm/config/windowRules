@@ -1,0 +1,293 @@
+#!/usr/bin/env bash
+#
+#   archvillainette 2024
+#
+#   ▀█████████▄     ▄████████    ▄███████▄  ▄█     █▄    ▄▄▄▄███▄▄▄▄  
+#     ███    ███   ███    ███   ███    ███ ███     ███ ▄██▀▀▀███▀▀▀██▄
+#     ███    ███   ███    █▀    ███    ███ ███     ███ ███   ███   ███
+#    ▄███▄▄▄██▀    ███          ███    ███ ███     ███ ███   ███   ███
+#   ▀▀███▀▀▀██▄  ▀███████████ ▀█████████▀  ███     ███ ███   ███   ███
+#     ███    ██▄          ███   ███        ███     ███ ███   ███   ███
+#     ███    ███    ▄█    ███   ███        ███ ▄█▄ ███ ███   ███   ███
+#   ▄█████████▀   ▄████████▀   ▄████▀       ▀███▀███▀   ▀█   ███   █▀ 
+#
+#   External window rules for BSPWM
+#
+#   Many capabilities were taken from here:
+#   https://gist.github.com/wimstefan/64e17d257d07b666079628a7e1859823
+#
+#   When you add window rules, make sure you follow the correct format.
+#   If you need to jigger something specific, you can employ the
+#   "window_type", "window_class" and "window_title" properties.
+#   Do not use "window_id" for anything as this will change every time
+#   a program runs. It's just for the rules to read the window properly.
+#
+
+window_id="$1"
+window_class="$2"
+window_instance="$3"
+window_title="$(xwininfo -id "$window_id" | sed '/^xwininfo/!d ; s,.*"\(.*\)".*,\1,')"
+window_type="$(xprop -id "$window_id" _NET_WM_WINDOW_TYPE | sed '/^_NET_WM_WINDOW_TYPE/!d ; s/^.* = \(.*\),.*/\1/')"
+has_presel=$(bspc query --nodes --node '.!automatic')
+
+# We log all window rules as they are performed in the /tmp directory.
+# If logs start to pile up, it means your /tmp is not on a tmpfs
+# and you may want to go in and clean them out.
+timestamp=$(date +%Y-%m-%d)
+logfolder=/tmp/bspwm-windowrules
+logfile=$logfolder/${timestamp}.log
+
+if [ ! -d "${logfolder}" ]; then
+    mkdir -p "${logfolder}"
+fi
+
+echo "Id: $window_id" >> "$logfile"
+echo "Class: $window_class" >> "$logfile"
+echo "Instance: $window_instance" >> "$logfile"
+echo "Title: $window_title" >> "$logfile"
+echo "Type: $window_type" >> "$logfile"
+echo "Presel: $has_presel" >> "$logfile"
+echo "---" >> "$logfile"
+
+# If a preselection exists, use it. 
+# We will not take into account any unique rules in this case.
+if [ ! -z $has_presel ]; then
+        exit 0
+fi
+
+#
+# █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   ▀█▀ █▄█ █▀█ █▀▀ █▀
+# ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   ░█░ ░█░ █▀▀ ██▄ ▄█
+#
+#   Use these for highly specific configurations
+#   that only affect specific window types, for
+#   example a sub-window of a main program, like
+#   a dialog pop-up or menu.
+#
+
+case "$window_type" in
+
+esac
+
+#
+# █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   ▀█▀ █ ▀█▀ █░░ █▀▀ █▀
+# ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   ░█░ █ ░█░ █▄▄ ██▄ ▄█
+#
+#   Use these options when you need something that targets
+#   a broad range of similar windows, such as a terminal 
+#   manager, that may be given unique classes on a per-window
+#   basis.
+#
+
+case "$window_title" in
+
+# -------------------------------------------
+# --- kitty terminal
+# -------------------------------------------
+
+    [Kk]itty)
+        case "$window_class" in
+            *FLOAT*)
+                echo "state=floating"
+                echo "center=on"
+                echo "rectangle=900x480+0+0"
+                ;;
+            *)
+                echo "desktop=^1"
+                echo "follow=on"
+                ;;
+            esac
+        ;;
+
+# -------------------------------------------
+# --- Appear Anywhere
+# -------------------------------------------
+
+    [Bb]lueman-manager|Network\ Connections|Volume\ Control)
+        echo "state=floating"
+        echo "center=on"
+        case "$window_type" in
+            *DIALOG* )
+                ;;
+            * )
+                echo "rectangle=750x540+0+0"
+                ;;
+        esac
+        ;;
+
+    *OpenSnitch*|*KeePassXC*|Syncthing-GTK|[Gg]it*)
+        echo "state=floating"
+        echo "center=on"
+        case "$window_type" in
+            *DIALOG* )
+                ;;
+            * )
+                echo "rectangle=1380x780+0+0"
+                ;;
+        esac
+        ;;
+
+    feh*)
+        echo "state=floating"
+        echo "center=on"
+        ;;
+
+esac
+
+#
+# █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   █▀▀ █░░ ▄▀█ █▀ █▀ █▀▀ █▀
+# ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   █▄▄ █▄▄ █▀█ ▄█ ▄█ ██▄ ▄█
+#
+#   Use these options when you need something that targets
+#   a specific program, or a program that changes its
+#   window name a lot (to reflect what it is doing.)
+#
+
+case "$window_class" in
+
+# -------------------------------------------
+# --- WORKSPACE 2: File Management
+# -------------------------------------------
+
+    [Tt]hunar)
+        case "$window_type" in
+            *DIALOG* )
+                echo "state=floating"
+                echo "center=on"
+                ;;
+            * )
+                echo "state=pseudo_tiled"
+                echo "desktop=^2"
+                echo "rectangle=966x576+0+0"
+                echo "follow=on"
+                ;;
+        esac
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 3: Web Browsing 
+# -------------------------------------------
+
+    [Ff]irefox*)
+        echo "desktop=^3"
+        echo "follow=on"
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 4: Coding and Development 
+# -------------------------------------------
+
+    [Cc]ode-oss)
+        echo "desktop=^4"
+        echo "follow=on"
+        ;;
+    
+# -------------------------------------------
+# --- WORKSPACE 5: Notes and Office
+# -------------------------------------------
+
+    *[Oo]bsidian*)
+        echo "desktop=^5"
+        echo "follow=on"
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 6: Games and Emulators
+# -------------------------------------------
+
+    [Rr]etroarch|[Dd]olphin-emu|[Aa]res|RPCS3)
+        case "$window_type" in
+            *DIALOG* )
+                echo "state=floating"
+                echo "center=on"
+                ;;
+            * )
+                echo "state=pseudo_tiled"
+                echo "desktop=^6"
+                echo "rectangle=1200x780+0+0"
+                echo "follow=on"
+                ;;
+        esac
+        ;;
+
+    [Ss]team)
+        echo "desktop=^6"
+        echo "follow=on"
+        case "$window_type" in
+            *DIALOG* )
+                echo "state=floating"
+                echo "center=on"
+                ;;
+        esac
+        ;;
+
+    nwmain-linux)
+        echo "desktop=^6"
+        echo "follow=on"
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 7: Messaging Services
+# -------------------------------------------
+
+    *[Ss]potify*|*[Ss]ayonara*)
+        echo "center=on" 
+        case "$window_type" in
+            *DIALOG* )
+                echo "state=floating"
+                ;;
+            * )
+                echo "state=pseudo_tiled"
+                echo "rectangle=1200x780+0+0"
+                echo "desktop=^8"
+                echo "follow=on"
+                ;;
+        esac
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 8: Music and Audio
+# -------------------------------------------
+
+    [Vv]esktop)
+        echo "center=on" 
+        case "$window_type" in
+            *DIALOG* )
+                echo "state=floating"
+                ;;
+            * )
+                echo "state=pseudo_tiled"
+                echo "rectangle=1200x780+0+0"
+                echo "desktop=^7"
+                echo "follow=on"
+                ;;
+        esac
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 9: Graphics and Images
+# -------------------------------------------
+
+    [Gg]imp*)
+        echo "desktop=^9"
+        echo "follow=on"
+        ;;
+
+# -------------------------------------------
+# --- WORKSPACE 10: Virtual Machines and Containers
+# -------------------------------------------
+
+    [Vv]irt-manager)
+        echo "state=floating"
+        echo "desktop=^10"
+        echo "follow=on"
+        echo "center=on"
+        ;;
+
+    *[Dd]ocker*)
+        echo "desktop=^10"
+        echo "follow=on"
+        echo "center=on"
+        ;;
+
+esac

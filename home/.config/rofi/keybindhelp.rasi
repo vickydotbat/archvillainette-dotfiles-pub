@@ -1,0 +1,13 @@
+@import "~/.config/rofi/config"
+
+textbox-prompt-colon {
+    str:                         "󰌌";
+}
+
+entry {
+    placeholder:                 "Search keybinds...";
+}
+
+listview {
+    lines:						 10;
+}

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# This was used as a base for this simple NowPlaying reader:
+# https://yarmo.eu/blog/playerctl-polybar/
+
+playerctlstatus=$(playerctl status 2> /dev/null)
+
+if [[ $playerctlstatus =~  "Playing" ]]; then
+    playerctl metadata --format "{{artist}} - {{title}}"
+else
+    echo ""
+fi

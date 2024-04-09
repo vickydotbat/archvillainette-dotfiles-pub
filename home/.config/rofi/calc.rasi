@@ -1,0 +1,13 @@
+@import "~/.config/rofi/config"
+
+textbox-prompt-colon {
+    str:                         "󰃬";
+}
+
+entry {
+    placeholder:                 "Calculate...";
+}
+
+listview {
+    lines:						 10;
+}

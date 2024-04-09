@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+conf_file="$HOME/.config/bspwm/bspwmrc"
+T_Padding=$(grep "bspc config top_padding" "$conf_file" | awk '{print $NF}')
+B_Padding=$(grep "bspc config bottom_padding" "$conf_file" | awk '{print $NF}')
+L_Padding=$(grep "bspc config left_padding" "$conf_file" | awk '{print $NF}')
+R_Padding=$(grep "bspc config right_padding" "$conf_file" | awk '{print $NF}')
+
+hide() {
+	(polybar-msg cmd hide)
+	(bspc config top_padding 2)
+	(bspc config bottom_padding 2)
+}
+
+unhide() {
+	(polybar-msg cmd show)
+	(bspc config top_padding "$T_Padding")
+	(bspc config bottom_padding "$B_Padding")
+}
+
+if [ -f /tmp/polybarIsHidden ]; then 
+  unhide 
+  rm /tmp/polybarIsHidden
+else 
+  hide
+  touch /tmp/polybarIsHidden
+fi

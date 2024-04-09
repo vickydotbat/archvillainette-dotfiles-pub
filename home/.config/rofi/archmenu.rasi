@@ -1,0 +1,24 @@
+@import "~/.config/rofi/config"
+
+window {
+    width:                       750;
+    background-color:            #1793d1;
+}
+
+listview {
+    columns:                     2;
+    lines:						 10;
+}
+
+textbox-prompt-colon {
+    str:                         "󰣇";
+    text-color:                  #1793d1;
+}
+
+entry {
+    placeholder:                 "Search the ArchLinux Wiki";
+}
+
+element selected.normal {
+    background-color:            #1793d1;
+}
